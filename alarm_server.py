@@ -2,6 +2,8 @@ import socket
 import os
 from time import gmtime, strftime
 
+SAVED_HASH = '1234'
+
 # Initialize socket
 HOST = 'localhost'
 PORT = 1337
@@ -20,21 +22,33 @@ def client_connection(connect):
 	while True:
 		data = connect.recv(1024)
 		if data == b'CLIENT_HELLO\n':
+			log_event("connect from: {0}:{1}".format(address[0], str(address[1])))
 			reply = 'SERVER_ACK\n'
-		elif data == b'CLIENT_ALARM\n':
-			log_event('SOME ASSHOLE CAME INTO THE HOUSE!!')
-			reply = 'SERVER_ALARM_NOTIFY\n'
+
+		elif b'CLIENT_CODE' in data:
+			client_data = data.decode()
+			client_message, code = client_data.split(':')
+			code = code.strip('\n')
+			if code == SAVED_HASH:
+				reply = 'SERVER_CODE_CORRECT\n'
+				log_event("Correct pin was given")
+			else:
+				reply = 'SERVER_ALARM_NOTIFY\n'
+				log_event("Break in detected, wrong pin given")
+
 		else:
+			log_event("non-protocol message: {0}".format(data.decode()))
 			reply = 'SERVER_NACK\n'
+
 		if not data:
-			print('client disconnect')
+			log_event('client disconnect')
 			break
 		connect.sendall(str.encode(reply))
 	connect.close()
 
 # Check if logfile exists, else create it
 def write_or_append():
-	if os.path.exists('/var/log/alarm.log') == True:
+	if os.path.exists('/Users/nick/miniproject-csn/alarm.log') == True:
 		file_mode = 'a'
 	else:
 		file_mode = 'w'
@@ -43,7 +57,7 @@ def write_or_append():
 # Log server events
 def log_event(message):
 	file_mode = write_or_append()
-	log_file = open('/var/log/alarm.log', file_mode)
+	log_file = open('alarm.log', file_mode)
 	time_stamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 	event = message + ' ' + time_stamp + '\n'
