@@ -85,6 +85,6 @@ while True:
 		break
 
 #convert list to string and print to terminal
-string = ''.join(str(e) for e in list)
+string = 'CLIENT_CODE:' + ''.join(str(e) for e in list)
 print('De ingevoerde code is: {}'.format(string))	
 
