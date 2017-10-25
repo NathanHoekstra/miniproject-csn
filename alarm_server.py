@@ -1,6 +1,6 @@
 import socket
 import os
-from time import gmtime, strftime
+from time import localtime, strftime
 
 SAVED_HASH = '1234'
 
@@ -58,9 +58,9 @@ def write_or_append():
 def log_event(message):
 	file_mode = write_or_append()
 	log_file = open('alarm.log', file_mode)
-	time_stamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+	time_stamp = strftime("%Y-%m-%d %H:%M:%S", localtimetime())
 
-	event = message + ' ' + time_stamp + '\n'
+	event = time_stamp + ': ' + message + '\n'
 
 	log_file.write(event)
 # Main loop
