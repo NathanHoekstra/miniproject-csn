@@ -58,7 +58,7 @@ def write_or_append():
 def log_event(message):
 	file_mode = write_or_append()
 	log_file = open('alarm.log', file_mode)
-	time_stamp = strftime("%Y-%m-%d %H:%M:%S", localtimetime())
+	time_stamp = strftime("%Y-%m-%d %H:%M:%S", localtime())
 
 	event = time_stamp + ': ' + message + '\n'
 
