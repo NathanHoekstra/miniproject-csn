@@ -5,7 +5,7 @@ from time import localtime, strftime
 SAVED_HASH = '1234'
 
 # Initialize socket
-HOST = 'localhost'
+HOST = ''
 PORT = 1337
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
