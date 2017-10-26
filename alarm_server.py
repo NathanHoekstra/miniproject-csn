@@ -1,11 +1,12 @@
+import inbreekbot
 import socket
 import os
 from time import localtime, strftime
 
-SAVED_HASH = '1234'
+SAVED_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'
 
 # Initialize socket
-HOST = ''
+HOST = '192.168.42.1'
 PORT = 1337
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -35,6 +36,7 @@ def client_connection(connect):
 			else:
 				reply = 'SERVER_ALARM_NOTIFY\n'
 				log_event("Break in detected, wrong pin given")
+				inbreekbot.handle()
 
 		else:
 			log_event("non-protocol message: {0}".format(data.decode()))
