@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import time
 import socket
 import hashlib
+import sys
 
 # Setup server ip and port
 host = '192.168.42.1'
@@ -12,7 +13,26 @@ port = 1337
 
 # Create variable s for socket library
 s = socket.socket()
-s.connect((host, port))
+print('(INFO) Connecting to server ...')
+try:
+	s.connect((host, port))
+except ConnectionRefusedError:
+	print('(ERROR) Connection refused')
+	sys.exit() # Close program
+
+# Function to handle the data to be send
+def send_data(data):
+        s.send(data.encode())
+        data = s.recv(1024).decode()
+        return data
+
+# Test connection by sending hello packet
+hello_data = 'CLIENT_HELLO\n'
+response = send_data(hello_data)
+if 'SERVER_ACK' in response:
+	print('(INFO) Connection succesfull')
+else:
+	print('(WARNING) Connection failed!')
 
 # Set GPIO mode to use broadcom pins
 GPIO.setmode(GPIO.BCM)
@@ -136,20 +156,13 @@ def gled_on():
 def gled_off():
 	GPIO.output(21, GPIO.LOW)
 
-# Function to handle the data to be send
-def send_data(data):
-	s.send(data.encode())
-	data = s.recv(1024).decode()
-	return data
-
-
 # Set state of alarm
 alarm_state = False
 
-# Turn off led's before use
+# Turn off led's before use (turn on red led to show alarm is disarmed
 bled_off()
 gled_off()
-rled_off()
+rled_on()
 
 # While loop for all the main logic
 while True:
@@ -192,5 +205,8 @@ while True:
 			time.sleep(0.5)
 			rled_off()
 			time.sleep(0.5)
+			# Turn red led back on if the alarm is off
+			if alarm_state == False:
+				rled_on()
 
 s.close()
