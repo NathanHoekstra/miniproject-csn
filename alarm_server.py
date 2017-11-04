@@ -6,7 +6,7 @@ from time import localtime, strftime
 SAVED_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'
 
 # Initialize socket
-HOST = '192.168.1.72'
+HOST = '192.168.1.77'
 PORT = 1337
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
